@@ -1,11 +1,15 @@
 require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
+const cors = require('cors')
+
 const { Client } = require('@duosecurity/duo_universal');
 
 const app = express();
+
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+app.use(cors())
 
 const duoClientConfig = {
   clientId: process.env.DUO_CLIENT_ID,
@@ -13,10 +17,12 @@ const duoClientConfig = {
 };
 
 app.post('/duo-auth-url', async (req, res) => {
+  console.log('body --', req.body.data)
+
   const {
     username,
     settings,
-  } = req.body;
+  } = req.body.data;
   const redirectUrl = settings.duo_redirect_url;
 
   try {
